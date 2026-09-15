@@ -1182,3 +1182,114 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
     </div>
   );
 }
+
+/* ---------- Live Web Intelligence ---------- */
+
+function LiveWebView({ query }: { query: string }) {
+  const [term, setTerm] = useState(query || "Cockroach Janta Party");
+  const [active, setActive] = useState(term);
+  const fetchLive = useServerFn(getLiveWeb);
+  const { data, isFetching, isError, error, refetch } = useQuery({
+    queryKey: ["live-web", active],
+    queryFn: () => fetchLive({ data: { query: active } }),
+    staleTime: 60_000,
+    retry: false,
+  });
+
+  const kinds = ["Reddit", "News", "Telegram"] as const;
+  const [kind, setKind] = useState<"All" | (typeof kinds)[number]>("All");
+  const items = (data?.items ?? []).filter((i) => kind === "All" || i.sourceKind === kind);
+
+  return (
+    <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
+      <Panel
+        title="Live Web Data"
+        eyebrow="Fetched live from public sources — separate from the four annotated datasets"
+        action={
+          <span className="flex items-center gap-2 rounded-full bg-risk-soft px-3 py-1.5 text-xs font-bold text-risk">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-risk" /> LIVE WEB DATA
+          </span>
+        }
+      >
+        <form
+          className="mb-4 flex flex-wrap items-center gap-2"
+          onSubmit={(e) => { e.preventDefault(); setActive(term.trim() || "Cockroach Janta Party"); }}
+        >
+          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-white/70 px-4 py-2.5">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search the live web…" className="w-full bg-transparent text-sm outline-hidden" />
+          </span>
+          <Button type="submit" size="sm" className="rounded-full">Search live</Button>
+          <Button type="button" size="sm" variant="secondary" className="rounded-full" onClick={() => refetch()} disabled={isFetching}>
+            <RefreshCw className={cn(isFetching && "animate-spin")} /> Refresh
+          </Button>
+        </form>
+
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {(["All", ...kinds] as const).map((k) => (
+            <button key={k} onClick={() => setKind(k)}
+              className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
+                kind === k ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-white/70 text-muted-foreground hover:text-ink")}>
+              {k}
+            </button>
+          ))}
+          {data && <span className="ml-auto text-[11px] font-semibold text-muted-foreground">Fetched {new Date(data.fetchedAt).toLocaleString()}</span>}
+        </div>
+
+        {isFetching && !data && <Empty>Fetching live web results…</Empty>}
+        {isError && (
+          <div className="rounded-3xl bg-blush/50 p-4 text-sm font-semibold text-ink">
+            Live web data is unavailable right now{error instanceof Error && error.message ? ` (${error.message})` : ""}. Nothing is shown rather than guessed — try Refresh in a moment.
+          </div>
+        )}
+        {data && items.length === 0 && !isFetching && (
+          <Empty>No live web results for “{active}”{kind === "All" ? "" : ` on ${kind}`} right now.</Empty>
+        )}
+
+        <div className="grid gap-3 xl:grid-cols-2">
+          {items.map((item) => (
+            <article key={item.id} className="rounded-3xl border border-white/70 bg-white/70 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate text-xs font-bold text-ink">{item.source}</p>
+                <span className="shrink-0 rounded-full bg-risk-soft px-2 py-0.5 text-[9px] font-bold text-risk">LIVE</span>
+              </div>
+              <p className="mt-1.5 text-sm font-semibold leading-snug text-ink">{item.title}</p>
+              {item.summary && <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{item.summary}</p>}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-bold text-secondary-foreground">{item.sourceKind}</span>
+                {item.published && <span className="text-[10px] font-semibold text-muted-foreground">{item.published}</span>}
+                {item.url ? (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
+                    Open source <ExternalLink className="h-3 w-3" />
+                  </a>
+                ) : (
+                  <span className="ml-auto rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">No source URL returned</span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel title="Live source status" eyebrow="Honest per-source state — no fallback data">
+        {!data && !isError && <Empty>Waiting for the first live fetch…</Empty>}
+        {isError && <p className="text-xs font-semibold text-muted-foreground">All live sources are unreachable from this workspace right now.</p>}
+        <div className="space-y-2">
+          {(data?.sources ?? []).map((s) => (
+            <div key={s.name} className={cn("rounded-2xl p-3", s.status === "ok" ? "bg-mint/50" : s.status === "empty" ? "bg-peach/50" : "bg-blush/50")}>
+              <p className="text-xs font-bold text-ink">{s.name}</p>
+              <p className="mt-0.5 text-[11px] font-semibold text-ink/70">
+                {s.status === "ok" ? `${s.count} live results` : s.status === "empty" ? "Reachable, no current results" : "Unavailable"}
+              </p>
+              {s.message && <p className="mt-0.5 text-[10px] text-ink/60">{s.message}</p>}
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded-3xl bg-gradient-to-br from-sky/60 to-lavender/50 p-4 text-xs leading-relaxed text-ink/80">
+          This page is <strong>Live Web Intelligence</strong>: current public web results with their real URLs. The four annotated datasets (X, Instagram, Reddit, Telegram) power every other page and are never mixed in here.
+        </div>
+        <Note className="mt-6 block text-center" rotate={-4}>Live signals. Real sources.</Note>
+      </Panel>
+    </div>
+  );
+}
