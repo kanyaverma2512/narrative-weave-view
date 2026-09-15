@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowRight, Bell, CalendarDays, ChevronRight, CirclePlay, Clock3, ExternalLink, FileText,
-  Filter, Globe2, Instagram, LayoutDashboard, Map, MessageCircle, Network, Pause, Play, Radio, RefreshCw, RotateCcw,
+  Filter, Globe2, Instagram, LayoutDashboard, Map as MapIcon, MessageCircle, Network, Pause, Play, Radio, RefreshCw, RotateCcw,
   Search, Send, Share2, ShieldAlert, SkipBack, SkipForward, Sparkles, TrendingUp, Users, X,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -41,7 +41,7 @@ const views: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Live Feed", icon: MessageCircle },
   { label: "Narratives", icon: TrendingUp },
   { label: "Network", icon: Network },
-  { label: "Geo Intelligence", icon: Map },
+  { label: "Geo Intelligence", icon: MapIcon },
   { label: "Analytics", icon: Globe2 },
   { label: "Alerts", icon: Bell },
   { label: "Reports", icon: FileText },
