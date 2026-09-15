@@ -404,11 +404,12 @@ export function buildSnapshot(filters: Filters): IntelSnapshot {
   const sources: SourceStatus[] = ALL_PLATFORMS.map((platform) => {
     const count = rows.filter((r) => r.platform === platform).length;
     const sample = records.find((r) => r.platform === platform);
+    const note = count > 0 ? sample?.sourceType : "No records match the current filters";
     return {
       platform,
       status: count > 0 ? "loaded" : "unavailable",
       count,
-      note: count > 0 ? (sample?.sourceType ?? undefined) : "No records match the current filters",
+      ...(note ? { note } : {}),
     };
   });
 

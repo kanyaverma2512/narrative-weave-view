@@ -148,12 +148,15 @@ export async function collectLiveWeb(query: string): Promise<LiveWebResult> {
     query,
     fetchedAt: new Date().toISOString(),
     items: lanes.flatMap((l) => l.res.items),
-    sources: lanes.map((l) => ({
-      name: l.name,
-      kind: l.kind,
-      status: l.res.failed ? "error" : l.res.items.length ? "ok" : "empty",
-      count: l.res.items.length,
-      message: l.res.failed ? "Source could not be reached" : l.res.items.length ? undefined : "No current results for this query",
-    })),
+    sources: lanes.map((l) => {
+      const message = l.res.failed ? "Source could not be reached" : l.res.items.length ? null : "No current results for this query";
+      return {
+        name: l.name,
+        kind: l.kind,
+        status: (l.res.failed ? "error" : l.res.items.length ? "ok" : "empty") as LiveWebSourceStatus["status"],
+        count: l.res.items.length,
+        ...(message ? { message } : {}),
+      };
+    }),
   };
 }
