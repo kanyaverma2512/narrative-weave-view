@@ -148,13 +148,13 @@ function buildNetwork(rows: DatasetRecord[]) {
     const slot = byPlatform.get(r.platform) ?? 0;
     byPlatform.set(r.platform, slot + 1);
     const total = laneTotals.get(r.platform) ?? 1;
-    const perRing = Math.max(3, Math.ceil(total / 3));
+    const perRing = 7;
     const ring = Math.floor(slot / perRing);
     const inRing = slot % perRing;
     const ringCount = Math.min(perRing, total - ring * perRing);
     const sector = (Math.PI * 2) / ALL_PLATFORMS.length;
     const angle = lane * sector + ((inRing + 0.5) / Math.max(1, ringCount)) * sector * 0.86 + sector * 0.07;
-    const radius = 16 + ring * 13;
+    const radius = 13 + ring * 9;
     return {
       id: r.key,
       label: r.label,

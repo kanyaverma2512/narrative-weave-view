@@ -536,7 +536,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
             })}
           </svg>
           {nodes.map((n) => {
-            const size = 14 + Math.round(n.influence * 18);
+            const size = 10 + Math.round(n.influence * 11);
             const linked = active ? edges.some((e) => (e.from === active.id && e.to === n.id) || (e.to === active.id && e.from === n.id)) : false;
             return (
               <Tooltip key={n.id}><TooltipTrigger asChild>
