@@ -932,47 +932,181 @@ function AlertRow({ alert }: { alert: IntelSnapshot["alerts"][number] }) {
   );
 }
 
-function AlertsView({ snapshot }: { snapshot: IntelSnapshot }) {
-  const alerts = snapshot.alerts;
-  const [selected, setSelected] = useState(0);
-  const activeAlert = alerts[selected] ?? alerts[0];
-  if (!activeAlert) {
-    return <Panel title="Alerts & Reports" eyebrow="Derived from the datasets"><Empty>No alert conditions in this selection.</Empty></Panel>;
-  }
+const SEVERITY_STYLE: Record<Severity, string> = {
+  Critical: "bg-risk-soft text-risk",
+  High: "bg-blush text-risk",
+  Medium: "bg-peach text-ink",
+  Low: "bg-success-soft text-success",
+};
+
+const STATUS_STYLE: Record<ThreatStatus, string> = {
+  New: "bg-sky/70 text-ink",
+  Investigating: "bg-butter/80 text-ink",
+  Confirmed: "bg-risk-soft text-risk",
+  Resolved: "bg-success-soft text-success",
+};
+
+function SummaryTile({ label, value, tone }: { label: string; value: number; tone: string }) {
   return (
-    <div className="grid gap-5 xl:grid-cols-[1fr_380px]">
-      <Panel title="Alerts & Reports" eyebrow="Flagged key events, volume peaks and bridge accounts">
-        <div className="space-y-3">
-          {alerts.map((a, i) => (
-            <button key={`${a.title}-${i}`} onClick={() => setSelected(i)}
-              className={cn("w-full rounded-3xl border p-4 text-left transition",
-                selected === i ? "border-primary/50 bg-gradient-to-br from-blush/60 to-peach/40 shadow-[0_18px_32px_-22px_var(--primary)]" : "border-white/70 bg-white/70 hover:bg-white")}>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-display text-sm font-extrabold text-ink">{a.title}</span>
-                <span className={cn("rounded-full px-2.5 py-1 text-[10px] font-bold", a.level === "High" ? "bg-risk-soft text-risk" : a.level === "Medium" ? "bg-peach text-ink" : "bg-success-soft text-success")}>{a.level}</span>
+    <div className={cn("rounded-3xl p-4", tone)}>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-ink/70">{label}</p>
+      <p className="mt-1 font-display text-2xl font-extrabold text-ink">{value}</p>
+    </div>
+  );
+}
+
+function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: Filters }) {
+  const all = useMemo(() => buildThreatAlerts(filters), [filters]);
+  const [tf, setTf] = useState<ThreatFilters>(emptyThreatFilters);
+  const alerts = useMemo(() => applyThreatFilters(all, tf), [all, tf]);
+  const summary = useMemo(() => threatSummary(alerts), [alerts]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const active = alerts.find((a) => a.id === selectedId) ?? alerts[0] ?? null;
+  const set = (patch: Partial<ThreatFilters>) => setTf({ ...tf, ...patch });
+  const selectClass = "rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink outline-hidden";
+  const dirty = JSON.stringify(tf) !== JSON.stringify(emptyThreatFilters);
+
+  return (
+    <div className="space-y-5">
+      <section className="grid gap-3 sm:grid-cols-3 xl:grid-cols-5">
+        <SummaryTile label="Active alerts" value={summary.active} tone="bg-gradient-to-br from-blush/85 to-peach/70" />
+        <SummaryTile label="Critical / High" value={summary.criticalHigh} tone="bg-gradient-to-br from-risk-soft to-blush/70" />
+        <SummaryTile label="Investigating" value={summary.investigating} tone="bg-gradient-to-br from-butter/85 to-peach/60" />
+        <SummaryTile label="Cross-platform incidents" value={summary.crossPlatform} tone="bg-gradient-to-br from-sky/85 to-lavender/60" />
+        <SummaryTile label="Resolved" value={summary.resolved} tone="bg-gradient-to-br from-mint/85 to-sky/55" />
+      </section>
+
+      <section className="glass-panel flex flex-wrap items-center gap-2 p-3">
+        <span className="flex items-center gap-1.5 px-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground"><ShieldAlert className="h-3.5 w-3.5" /> Threat filters</span>
+        <select aria-label="Severity" className={selectClass} value={tf.severity} onChange={(e) => set({ severity: e.target.value as Severity | "All" })}>
+          <option value="All">All severities</option>
+          {SEVERITIES.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select aria-label="Threat type" className={selectClass} value={tf.threatType} onChange={(e) => set({ threatType: e.target.value as ThreatType | "All" })}>
+          <option value="All">All threat types</option>
+          {THREAT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <select aria-label="Alert platform" className={selectClass} value={tf.platform} onChange={(e) => set({ platform: e.target.value as Platform | "All" })}>
+          <option value="All">All platforms</option>
+          {ALL_PLATFORMS.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
+        <select aria-label="Status" className={selectClass} value={tf.status} onChange={(e) => set({ status: e.target.value as ThreatStatus | "All" })}>
+          <option value="All">All statuses</option>
+          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+          From <input type="date" className="bg-transparent text-ink outline-hidden" value={tf.from} onChange={(e) => set({ from: e.target.value })} />
+        </label>
+        <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+          To <input type="date" className="bg-transparent text-ink outline-hidden" value={tf.to} onChange={(e) => set({ to: e.target.value })} />
+        </label>
+        {dirty && <Button size="sm" variant="secondary" className="ml-auto rounded-full" onClick={() => setTf(emptyThreatFilters)}><RotateCcw /> Reset</Button>}
+      </section>
+
+      <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
+        <Panel title="Security alerts" eyebrow={`${alerts.length} detections over ${summary.records} of ${snapshot.totals.posts} records in the current selection`}>
+          {alerts.length === 0 ? <Empty>No detection rule is satisfied by the current selection.</Empty> : (
+            <div className="space-y-3">
+              {alerts.map((a) => (
+                <button key={a.id} onClick={() => setSelectedId(a.id)}
+                  className={cn("w-full rounded-3xl border p-4 text-left transition",
+                    active?.id === a.id ? "border-primary/50 bg-gradient-to-br from-blush/60 to-peach/40 shadow-[0_18px_32px_-22px_var(--primary)]" : "border-white/70 bg-white/70 hover:bg-white")}>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-display text-sm font-extrabold text-ink">{a.title}</span>
+                    <span className="flex items-center gap-1.5">
+                      <span className={cn("rounded-full px-2.5 py-1 text-[10px] font-bold", SEVERITY_STYLE[a.severity])}>{a.severity}</span>
+                      <span className={cn("rounded-full px-2.5 py-1 text-[10px] font-bold", STATUS_STYLE[a.status])}>{a.status}</span>
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">{a.whatHappened}</p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-bold">
+                    <span className="rounded-full bg-secondary px-2.5 py-1 text-secondary-foreground">{a.threatType}</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-primary">Risk {a.riskScore}/100</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/70">{a.recordCount} records · {a.accounts.length} accounts</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/70">{a.platforms.join(" · ")}</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/60">{a.firstSeen} → {a.lastSeen}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </Panel>
+
+        <Panel title="Investigation" eyebrow="Explainable detection, dataset evidence only">
+          {!active ? <Empty>Select an alert to investigate.</Empty> : (
+            <>
+              <div className="pop-3d flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blush to-peach text-risk"><ShieldAlert /></div>
+              <h3 className="mt-4 font-display text-xl font-extrabold text-ink">{active.title}</h3>
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] font-bold">
+                <span className={cn("rounded-full px-2.5 py-1", SEVERITY_STYLE[active.severity])}>{active.severity}</span>
+                <span className={cn("rounded-full px-2.5 py-1", STATUS_STYLE[active.status])}>{active.status}</span>
+                <span className="rounded-full bg-secondary px-2.5 py-1 text-secondary-foreground">{active.threatType}</span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{a.detail}</p>
-              <p className="mt-3 text-xs font-bold text-primary">Signal: {a.signal}</p>
-            </button>
-          ))}
-        </div>
-      </Panel>
-      <Panel title="Why this alert fired" eyebrow="Explainable detection">
-        <div className="pop-3d flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blush to-peach text-risk"><ShieldAlert /></div>
-        <h3 className="mt-4 font-display text-xl font-extrabold text-ink">{activeAlert.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{activeAlert.detail} Derived from the {snapshot.totals.posts} records in the current selection.</p>
-        <div className="mt-5 space-y-3">
-          <MiniMetric label="Primary signal" value={activeAlert.signal} />
-          <MiniMetric label="Dated" value={activeAlert.time} />
-          <MiniMetric label="Severity" value={activeAlert.level} />
-        </div>
-        {activeAlert.url && (
-          <a href={activeAlert.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
-            Open source record <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        )}
-        <Note className="mt-6 block text-center" rotate={-4}>Be aware. Be prepared. Be safer.</Note>
-      </Panel>
+
+              <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">What happened</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{active.whatHappened}</p>
+              <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Why it was flagged</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{active.whyFlagged}</p>
+
+              <div className="mt-5 space-y-3">
+                <MiniMetric label="Risk score" value={`${active.riskScore} / 100`} />
+                <MiniMetric label="Platforms" value={active.platforms.join(", ")} />
+                <MiniMetric label="Related records" value={String(active.recordCount)} />
+                <MiniMetric label="Timestamp range" value={`${active.firstSeen} → ${active.lastSeen}`} />
+                {active.locations.length > 0 && <MiniMetric label="Locations in records" value={active.locations.slice(0, 4).join(", ")} />}
+              </div>
+
+              <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Accounts / entities</p>
+              <div className="mt-2 space-y-1.5">
+                {active.accounts.map((acc) => (
+                  <div key={`${acc.platform}:${acc.handle}`} className="flex items-center gap-2 rounded-2xl bg-white/70 px-3 py-2">
+                    <PlatformGlyph platform={acc.platform} className="h-7 w-7" />
+                    <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink">{acc.handle}</span>
+                    <span className="text-[10px] font-bold text-muted-foreground">{acc.records} rec</span>
+                  </div>
+                ))}
+              </div>
+
+              {active.timeline.length > 0 && (
+                <>
+                  <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Activity timeline</p>
+                  <div className="mt-2 space-y-1">
+                    {active.timeline.map((t) => (
+                      <div key={t.time} className="flex items-center gap-2">
+                        <span className="w-20 shrink-0 text-[10px] font-semibold text-muted-foreground">{t.time}</span>
+                        <span className="h-2 rounded-full bg-primary/70" style={{ width: `${Math.max(6, (t.total / Math.max(...active.timeline.map((x) => x.total))) * 70)}%` }} />
+                        <span className="text-[10px] font-bold text-ink/70">{t.total}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Evidence ({active.evidence.length})</p>
+              <div className="mt-2 max-h-80 space-y-2 overflow-y-auto pr-1">
+                {active.evidence.map((e) => (
+                  <div key={e.id} className="rounded-2xl bg-white/70 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate text-xs font-bold text-ink">{e.handle}</span>
+                      <span className="shrink-0 text-[10px] text-muted-foreground">{e.platform} · {e.date}</span>
+                    </div>
+                    <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{e.summary}</p>
+                    <p className="mt-1 text-[10px] text-ink/55">{[e.sentiment, e.stage, e.sourceType].filter(Boolean).join(" · ")}</p>
+                    {e.url ? (
+                      <a href={e.url} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:underline">
+                        Open source record <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : (
+                      <p className="mt-1 text-[10px] font-bold text-muted-foreground">No source URL available in dataset</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Note className="mt-6 block text-center" rotate={-4}>Be aware. Be prepared. Be safer.</Note>
+            </>
+          )}
+        </Panel>
+      </div>
     </div>
   );
 }
