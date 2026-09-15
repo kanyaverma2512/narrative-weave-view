@@ -21,6 +21,10 @@ import { IndiaMap } from "@/components/IndiaMap";
 import { useIntel } from "@/lib/use-intel";
 import { ALL_PLATFORMS, emptyFilters, filterOptions, type Filters } from "@/lib/dataset-analytics";
 import type { IntelSnapshot, LivePost, SourceStatus } from "@/lib/intel-types";
+import {
+  applyThreatFilters, buildThreatAlerts, emptyThreatFilters, SEVERITIES, STATUSES, THREAT_TYPES, threatSummary,
+  type Severity, type ThreatFilters, type ThreatStatus, type ThreatType,
+} from "@/lib/threat-alerts";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -269,7 +273,7 @@ function Index() {
             {view === "Network" && <NetworkView snapshot={snapshot} />}
             {view === "Geo Intelligence" && <GeographicView snapshot={snapshot} />}
             {view === "Analytics" && <AnalyticsView snapshot={snapshot} />}
-            {view === "Alerts" && <AlertsView snapshot={snapshot} />}
+            {view === "Alerts" && <AlertsView snapshot={snapshot} filters={filters} />}
             {view === "Reports" && <ReportsView snapshot={snapshot} />}
             {view === "Investigation Replay" && <ReplayView snapshot={snapshot} />}
 
@@ -292,7 +296,7 @@ function viewSubtitle(view: View) {
     Network: "Accounts from the datasets, connected only where the data shows a shared source, shared event or a mention.",
     "Geo Intelligence": "Locations recorded in the datasets, mapped where a place is identifiable.",
     Analytics: "Platform mix, sentiment labels, emotions and narrative stages.",
-    Alerts: "Warnings derived from flagged key events, volume peaks and bridge accounts.",
+    Alerts: "Cyber threat detection and early warning, computed only from the four annotated datasets.",
     Reports: "Export findings, timelines and network analysis.",
     "Investigation Replay": "Step through the movement using the dataset's key events.",
     "Live Web Data": "Current public web results fetched live from Reddit search, Google News and public Telegram channels.",
