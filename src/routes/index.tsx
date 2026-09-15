@@ -2,9 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowRight, Bell, CalendarDays, ChevronRight, CirclePlay, Clock3, ExternalLink, FileText,
-  Filter, Globe2, Instagram, LayoutDashboard, Map, MessageCircle, Network, Pause, Play, RotateCcw,
+  Filter, Globe2, Instagram, LayoutDashboard, Map, MessageCircle, Network, Pause, Play, Radio, RefreshCw, RotateCcw,
   Search, Send, Share2, ShieldAlert, SkipBack, SkipForward, Sparkles, TrendingUp, Users, X,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getLiveWeb } from "@/lib/live-web.functions";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart,
   ResponsiveContainer, Tooltip as ChartTooltip, XAxis, YAxis,
@@ -31,7 +34,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type View = "Overview" | "Live Feed" | "Narratives" | "Network" | "Geo Intelligence" | "Analytics" | "Alerts" | "Reports" | "Investigation Replay";
+type View = "Overview" | "Live Feed" | "Narratives" | "Network" | "Geo Intelligence" | "Analytics" | "Alerts" | "Reports" | "Investigation Replay" | "Live Web Data";
 
 const views: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Overview", icon: LayoutDashboard },
@@ -43,6 +46,7 @@ const views: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Alerts", icon: Bell },
   { label: "Reports", icon: FileText },
   { label: "Investigation Replay", icon: CirclePlay },
+  { label: "Live Web Data", icon: Radio },
 ];
 
 /* ---------- shared shell pieces ---------- */
