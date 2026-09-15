@@ -242,7 +242,7 @@ export function buildThreatAlerts(filters: Filters): ThreatAlert[] {
       title: `Shared source amplification — ${group[0]!.topic ?? "multiple accounts"}`,
       threatType: "Coordinated Activity",
       rows: group,
-      whatHappened: `${accounts.length} accounts (${accounts.length} of ${uniq(rows.map(accountKey)).length} in this selection) are recorded against the same source URL.`,
+      whatHappened: `${accounts.length} of the ${uniq(rows.map(accountKey)).length} accounts in this selection have ${group.length} records recorded against the same source URL on ${uniq(group.map((r) => r.platform)).join(", ")}.`,
       whyFlagged: `Identical source_url across multiple accounts in the dataset.`,
     }));
   }
