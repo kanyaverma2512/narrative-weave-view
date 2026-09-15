@@ -138,13 +138,23 @@ function buildNetwork(rows: DatasetRecord[]) {
   }).sort((a, b) => b.posts - a.posts || (b.engagement ?? 0) - (a.engagement ?? 0));
 
   const maxPosts = Math.max(1, ...ranked.map((r) => r.posts));
+  // Layout: one sector per platform lane, accounts spread over concentric rings
+  // inside that sector so nodes never sit on top of each other.
+  const laneTotals = new Map<Platform, number>();
+  for (const r of ranked) laneTotals.set(r.platform, (laneTotals.get(r.platform) ?? 0) + 1);
   const byPlatform = new Map<Platform, number>();
   const nodes: NetworkNode[] = ranked.map((r) => {
     const lane = ALL_PLATFORMS.indexOf(r.platform);
     const slot = byPlatform.get(r.platform) ?? 0;
     byPlatform.set(r.platform, slot + 1);
-    const angle = ((lane + 0.5) / ALL_PLATFORMS.length) * Math.PI * 2 + slot * 0.5;
-    const radius = 20 + (slot % 3) * 11;
+    const total = laneTotals.get(r.platform) ?? 1;
+    const perRing = 7;
+    const ring = Math.floor(slot / perRing);
+    const inRing = slot % perRing;
+    const ringCount = Math.min(perRing, total - ring * perRing);
+    const sector = (Math.PI * 2) / ALL_PLATFORMS.length;
+    const angle = lane * sector + ((inRing + 0.5) / Math.max(1, ringCount)) * sector * 0.86 + sector * 0.07;
+    const radius = 17 + ring * 10;
     return {
       id: r.key,
       label: r.label,
@@ -155,7 +165,7 @@ function buildNetwork(rows: DatasetRecord[]) {
       influence: Math.max(0.2, r.posts / maxPosts),
       url: r.url,
       x: Math.round(50 + Math.cos(angle) * radius),
-      y: Math.round(50 + Math.sin(angle) * radius * 0.8),
+      y: Math.round(50 + Math.sin(angle) * radius * 0.92),
     };
   });
 
@@ -394,11 +404,12 @@ export function buildSnapshot(filters: Filters): IntelSnapshot {
   const sources: SourceStatus[] = ALL_PLATFORMS.map((platform) => {
     const count = rows.filter((r) => r.platform === platform).length;
     const sample = records.find((r) => r.platform === platform);
+    const note = count > 0 ? sample?.sourceType : "No records match the current filters";
     return {
       platform,
       status: count > 0 ? "loaded" : "unavailable",
       count,
-      note: count > 0 ? (sample?.sourceType ?? undefined) : "No records match the current filters",
+      ...(note ? { note } : {}),
     };
   });
 

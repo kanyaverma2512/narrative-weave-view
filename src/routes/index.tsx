@@ -2,9 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowRight, Bell, CalendarDays, ChevronRight, CirclePlay, Clock3, ExternalLink, FileText,
-  Filter, Globe2, Instagram, LayoutDashboard, Map, MessageCircle, Network, Pause, Play, RotateCcw,
+  Filter, Globe2, Instagram, LayoutDashboard, Map as MapIcon, MessageCircle, Network, Pause, Play, Radio, RefreshCw, RotateCcw,
   Search, Send, Share2, ShieldAlert, SkipBack, SkipForward, Sparkles, TrendingUp, Users, X,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getLiveWeb } from "@/lib/live-web.functions";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart,
   ResponsiveContainer, Tooltip as ChartTooltip, XAxis, YAxis,
@@ -31,18 +34,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type View = "Overview" | "Live Feed" | "Narratives" | "Network" | "Geo Intelligence" | "Analytics" | "Alerts" | "Reports" | "Investigation Replay";
+type View = "Overview" | "Live Feed" | "Narratives" | "Network" | "Geo Intelligence" | "Analytics" | "Alerts" | "Reports" | "Investigation Replay" | "Live Web Data";
 
 const views: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Overview", icon: LayoutDashboard },
   { label: "Live Feed", icon: MessageCircle },
   { label: "Narratives", icon: TrendingUp },
   { label: "Network", icon: Network },
-  { label: "Geo Intelligence", icon: Map },
+  { label: "Geo Intelligence", icon: MapIcon },
   { label: "Analytics", icon: Globe2 },
   { label: "Alerts", icon: Bell },
   { label: "Reports", icon: FileText },
   { label: "Investigation Replay", icon: CirclePlay },
+  { label: "Live Web Data", icon: Radio },
 ];
 
 /* ---------- shared shell pieces ---------- */
@@ -255,9 +259,10 @@ function Index() {
               </div>
             </div>
 
-            <SourceBar snapshot={snapshot} />
-            <FilterBar filters={filters} setFilters={setFilters} />
+            {view !== "Live Web Data" && <SourceBar snapshot={snapshot} />}
+            {view !== "Live Web Data" && <FilterBar filters={filters} setFilters={setFilters} />}
 
+            {view === "Live Web Data" && <LiveWebView query={filters.search.trim()} />}
             {view === "Overview" && <Overview snapshot={snapshot} onOpen={setView} />}
             {view === "Live Feed" && <SocialFeed snapshot={snapshot} filters={filters} setFilters={setFilters} />}
             {view === "Narratives" && <TimelineView snapshot={snapshot} />}
@@ -290,6 +295,7 @@ function viewSubtitle(view: View) {
     Alerts: "Warnings derived from flagged key events, volume peaks and bridge accounts.",
     Reports: "Export findings, timelines and network analysis.",
     "Investigation Replay": "Step through the movement using the dataset's key events.",
+    "Live Web Data": "Current public web results fetched live from Reddit search, Google News and public Telegram channels.",
   };
   return copy[view];
 }
@@ -530,7 +536,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
             })}
           </svg>
           {nodes.map((n) => {
-            const size = 14 + Math.round(n.influence * 18);
+            const size = 10 + Math.round(n.influence * 11);
             const linked = active ? edges.some((e) => (e.from === active.id && e.to === n.id) || (e.to === active.id && e.from === n.id)) : false;
             return (
               <Tooltip key={n.id}><TooltipTrigger asChild>
@@ -977,8 +983,13 @@ function download(filename: string, content: string, type: string) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  a.rel = "noopener";
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => {
+    a.remove();
+    URL.revokeObjectURL(url);
+  }, 0);
 }
 
 const csv = (rows: (string | number | null)[][]) =>
@@ -1167,6 +1178,117 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
         )}
         <Button className="mt-5 w-full rounded-full" onClick={() => setStep((s) => (s >= last ? 0 : s + 1))}>{step >= last ? "Replay from start" : "Next event"} <ArrowRight /></Button>
         <Note className="mt-6 block text-center" rotate={-4}>Walk the narrative, minute by minute.</Note>
+      </Panel>
+    </div>
+  );
+}
+
+/* ---------- Live Web Intelligence ---------- */
+
+function LiveWebView({ query }: { query: string }) {
+  const [term, setTerm] = useState(query || "Cockroach Janta Party");
+  const [active, setActive] = useState(term);
+  const fetchLive = useServerFn(getLiveWeb);
+  const { data, isFetching, isError, error, refetch } = useQuery({
+    queryKey: ["live-web", active],
+    queryFn: () => fetchLive({ data: { query: active } }),
+    staleTime: 60_000,
+    retry: false,
+  });
+
+  const kinds = ["Reddit", "News", "Telegram"] as const;
+  const [kind, setKind] = useState<"All" | (typeof kinds)[number]>("All");
+  const items = (data?.items ?? []).filter((i) => kind === "All" || i.sourceKind === kind);
+
+  return (
+    <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
+      <Panel
+        title="Live Web Data"
+        eyebrow="Fetched live from public sources — separate from the four annotated datasets"
+        action={
+          <span className="flex items-center gap-2 rounded-full bg-risk-soft px-3 py-1.5 text-xs font-bold text-risk">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-risk" /> LIVE WEB DATA
+          </span>
+        }
+      >
+        <form
+          className="mb-4 flex flex-wrap items-center gap-2"
+          onSubmit={(e) => { e.preventDefault(); setActive(term.trim() || "Cockroach Janta Party"); }}
+        >
+          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-white/70 px-4 py-2.5">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search the live web…" className="w-full bg-transparent text-sm outline-hidden" />
+          </span>
+          <Button type="submit" size="sm" className="rounded-full">Search live</Button>
+          <Button type="button" size="sm" variant="secondary" className="rounded-full" onClick={() => refetch()} disabled={isFetching}>
+            <RefreshCw className={cn(isFetching && "animate-spin")} /> Refresh
+          </Button>
+        </form>
+
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {(["All", ...kinds] as const).map((k) => (
+            <button key={k} onClick={() => setKind(k)}
+              className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
+                kind === k ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-white/70 text-muted-foreground hover:text-ink")}>
+              {k}
+            </button>
+          ))}
+          {data && <span className="ml-auto text-[11px] font-semibold text-muted-foreground">Fetched {new Date(data.fetchedAt).toLocaleString()}</span>}
+        </div>
+
+        {isFetching && !data && <Empty>Fetching live web results…</Empty>}
+        {isError && (
+          <div className="rounded-3xl bg-blush/50 p-4 text-sm font-semibold text-ink">
+            Live web data is unavailable right now{error instanceof Error && error.message ? ` (${error.message})` : ""}. Nothing is shown rather than guessed — try Refresh in a moment.
+          </div>
+        )}
+        {data && items.length === 0 && !isFetching && (
+          <Empty>No live web results for “{active}”{kind === "All" ? "" : ` on ${kind}`} right now.</Empty>
+        )}
+
+        <div className="grid gap-3 xl:grid-cols-2">
+          {items.map((item) => (
+            <article key={item.id} className="rounded-3xl border border-white/70 bg-white/70 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate text-xs font-bold text-ink">{item.source}</p>
+                <span className="shrink-0 rounded-full bg-risk-soft px-2 py-0.5 text-[9px] font-bold text-risk">LIVE</span>
+              </div>
+              <p className="mt-1.5 text-sm font-semibold leading-snug text-ink">{item.title}</p>
+              {item.summary && <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{item.summary}</p>}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-bold text-secondary-foreground">{item.sourceKind}</span>
+                {item.published && <span className="text-[10px] font-semibold text-muted-foreground">{item.published}</span>}
+                {item.url ? (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
+                    Open source <ExternalLink className="h-3 w-3" />
+                  </a>
+                ) : (
+                  <span className="ml-auto rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">No source URL returned</span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel title="Live source status" eyebrow="Honest per-source state — no fallback data">
+        {!data && !isError && <Empty>Waiting for the first live fetch…</Empty>}
+        {isError && <p className="text-xs font-semibold text-muted-foreground">All live sources are unreachable from this workspace right now.</p>}
+        <div className="space-y-2">
+          {(data?.sources ?? []).map((s) => (
+            <div key={s.name} className={cn("rounded-2xl p-3", s.status === "ok" ? "bg-mint/50" : s.status === "empty" ? "bg-peach/50" : "bg-blush/50")}>
+              <p className="text-xs font-bold text-ink">{s.name}</p>
+              <p className="mt-0.5 text-[11px] font-semibold text-ink/70">
+                {s.status === "ok" ? `${s.count} live results` : s.status === "empty" ? "Reachable, no current results" : "Unavailable"}
+              </p>
+              {s.message && <p className="mt-0.5 text-[10px] text-ink/60">{s.message}</p>}
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded-3xl bg-gradient-to-br from-sky/60 to-lavender/50 p-4 text-xs leading-relaxed text-ink/80">
+          This page is <strong>Live Web Intelligence</strong>: current public web results with their real URLs. The four annotated datasets (X, Instagram, Reddit, Telegram) power every other page and are never mixed in here.
+        </div>
+        <Note className="mt-6 block text-center" rotate={-4}>Live signals. Real sources.</Note>
       </Panel>
     </div>
   );
