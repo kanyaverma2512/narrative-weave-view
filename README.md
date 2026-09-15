@@ -1,4 +1,4 @@
-# Remix*6 of Nexus Insights
+Nexus Insights
 
 Use this version, with just enough context for Lovable to understand the product, without feeding it a 4-page manifesto:
 
