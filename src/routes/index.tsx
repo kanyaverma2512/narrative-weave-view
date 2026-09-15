@@ -259,9 +259,10 @@ function Index() {
               </div>
             </div>
 
-            <SourceBar snapshot={snapshot} />
-            <FilterBar filters={filters} setFilters={setFilters} />
+            {view !== "Live Web Data" && <SourceBar snapshot={snapshot} />}
+            {view !== "Live Web Data" && <FilterBar filters={filters} setFilters={setFilters} />}
 
+            {view === "Live Web Data" && <LiveWebView query={filters.search.trim()} />}
             {view === "Overview" && <Overview snapshot={snapshot} onOpen={setView} />}
             {view === "Live Feed" && <SocialFeed snapshot={snapshot} filters={filters} setFilters={setFilters} />}
             {view === "Narratives" && <TimelineView snapshot={snapshot} />}
@@ -294,6 +295,7 @@ function viewSubtitle(view: View) {
     Alerts: "Warnings derived from flagged key events, volume peaks and bridge accounts.",
     Reports: "Export findings, timelines and network analysis.",
     "Investigation Replay": "Step through the movement using the dataset's key events.",
+    "Live Web Data": "Current public web results fetched live from Reddit search, Google News and public Telegram channels.",
   };
   return copy[view];
 }
