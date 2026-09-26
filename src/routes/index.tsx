@@ -28,9 +28,9 @@ import {
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "NEXUS — From Conversations to Clarity" },
+    { title: "TRENDLY — From Conversations to Clarity" },
     { name: "description", content: "Narrative, sentiment and network intelligence built from annotated X, Instagram, Reddit and Telegram datasets on the Cockroach Janta Party movement." },
-    { property: "og:title", content: "NEXUS — From Conversations to Clarity" },
+    { property: "og:title", content: "TRENDLY — From Conversations to Clarity" },
     { property: "og:description", content: "Narrative, sentiment and network intelligence from annotated social-media datasets." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
@@ -78,7 +78,7 @@ function Note({ children, className, rotate = -6 }: { children: React.ReactNode;
 function Logo() {
   return (
     <div className="flex flex-col">
-      <span className="font-display text-2xl font-extrabold tracking-tight text-ink">NEXUS</span>
+      <span className="font-display text-2xl font-extrabold tracking-tight text-ink">TRENDLY</span>
       <span className="text-[10px] font-medium tracking-wide text-muted-foreground">From Conversations to Clarity</span>
     </div>
   );
@@ -141,7 +141,7 @@ function SourceBar({ snapshot }: { snapshot: IntelSnapshot }) {
 
 function FilterBar({ filters, setFilters }: { filters: Filters; setFilters: (f: Filters) => void }) {
   const set = (patch: Partial<Filters>) => setFilters({ ...filters, ...patch });
-  const selectClass = "rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink outline-hidden";
+  const selectClass = "rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-ink outline-hidden";
   const dirty = JSON.stringify(filters) !== JSON.stringify(emptyFilters);
   return (
     <section className="glass-panel mb-5 flex flex-wrap items-center gap-2 p-3">
@@ -162,10 +162,10 @@ function FilterBar({ filters, setFilters }: { filters: Filters; setFilters: (f: 
         <option value="All">All narrative stages</option>
         {filterOptions.stages.map((s) => <option key={s} value={s}>{s}</option>)}
       </select>
-      <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+      <label className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
         From <input type="date" className="bg-transparent text-ink outline-hidden" value={filters.from} onChange={(e) => set({ from: e.target.value })} />
       </label>
-      <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+      <label className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
         To <input type="date" className="bg-transparent text-ink outline-hidden" value={filters.to} onChange={(e) => set({ to: e.target.value })} />
       </label>
       {dirty && <Button size="sm" variant="secondary" className="ml-auto rounded-full" onClick={() => setFilters(emptyFilters)}><RotateCcw /> Reset</Button>}
@@ -194,18 +194,18 @@ function Index() {
             <Logo />
           </button>
           <form
-            className="ml-2 hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-white/70 px-4 py-2.5 md:flex"
+            className="ml-2 hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-surface/70 px-4 py-2.5 md:flex"
             onSubmit={(e) => { e.preventDefault(); setFilters({ ...filters, search: term.trim() }); }}
           >
             <Search className="h-4 w-4 text-muted-foreground" />
             <input value={term} onChange={(e) => setTerm(e.target.value)} className="w-full bg-transparent text-sm outline-hidden placeholder:text-muted-foreground" placeholder="Search accounts, summaries, topics, entities — press Enter…" />
           </form>
           <div className="ml-auto flex items-center gap-2">
-            <span className="hidden items-center gap-2 rounded-full border border-border bg-white/70 px-3 py-2 text-xs font-semibold text-muted-foreground lg:flex">
+            <span className="hidden items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-2 text-xs font-semibold text-muted-foreground lg:flex">
               <CalendarDays className="h-3.5 w-3.5" /> {snapshot.latestDate ?? "No dated records"}
             </span>
             <Tooltip><TooltipTrigger asChild>
-              <Button size="icon" variant="ghost" className="relative rounded-full bg-white/70" aria-label="Notifications" onClick={() => setView("Alerts")}>
+              <Button size="icon" variant="ghost" className="relative rounded-full bg-surface/70" aria-label="Notifications" onClick={() => setView("Alerts")}>
                 <Bell />{alertCount > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />}
               </Button>
             </TooltipTrigger><TooltipContent>{alertCount} active alerts</TooltipContent></Tooltip>
@@ -225,7 +225,7 @@ function Index() {
                       view === label ? "bg-gradient-to-r from-primary to-blush text-primary-foreground shadow-[0_10px_22px_-10px_var(--primary)]" : "text-muted-foreground hover:bg-secondary/60 hover:text-ink")}>
                     <Icon className="h-4 w-4" />
                     <span className="truncate">{label}</span>
-                    {badge && <span className={cn("ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold", view === label ? "bg-white/25" : "bg-primary text-primary-foreground")}>{badge}</span>}
+                    {badge && <span className={cn("ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold", view === label ? "bg-surface/25" : "bg-primary text-primary-foreground")}>{badge}</span>}
                   </button>
                 );
               })}
@@ -251,7 +251,7 @@ function Index() {
               <div>
                 <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary"><Sparkles className="h-3.5 w-3.5" /> Dataset intelligence workspace</p>
                 <h1 className="font-display text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
-                  {view === "Overview" ? <>Good morning, <span className="hand block text-[2.6rem] text-primary sm:text-[3.2rem]">Analyst!</span></> : view}
+                  {view === "Overview" ? <>Welcome back, <span className="block bg-gradient-to-r from-primary to-sky-glow bg-clip-text text-transparent">Analyst.</span></> : view}
                 </h1>
                 <p className="mt-1 max-w-xl text-sm text-muted-foreground">{viewSubtitle(view)}</p>
               </div>
@@ -278,7 +278,7 @@ function Index() {
             {view === "Investigation Replay" && <ReplayView snapshot={snapshot} />}
 
             <footer className="mt-8 flex flex-wrap items-center justify-between gap-4 px-1 pb-2">
-              <span className="font-display text-3xl font-extrabold tracking-tight text-ink/15">NEXUS</span>
+              <span className="font-display text-3xl font-extrabold tracking-tight text-ink/15">TRENDLY</span>
               <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-muted-foreground">People · Communities · Safer Tomorrow</p>
             </footer>
           </main>
@@ -326,10 +326,10 @@ function Empty({ children }: { children: React.ReactNode }) {
 function Stat({ icon: Icon, label, value, delta, tone }: { icon: typeof Activity; label: string; value: string; delta: string; tone: "blush" | "sky" | "mint" | "lavender" }) {
   const bg = { blush: "from-blush/85 to-peach/70", sky: "from-sky/85 to-lavender/60", mint: "from-mint/85 to-sky/55", lavender: "from-lavender/85 to-blush/55" }[tone];
   return (
-    <div className={cn("rounded-3xl bg-gradient-to-br p-4 shadow-[0_16px_34px_-20px_oklch(0.45_0.1_20/45%)]", bg)}>
+    <div className={cn("rounded-3xl bg-gradient-to-br p-4 shadow-[0_16px_34px_-20px_oklch(0.05_0.03_250/70%)]", bg)}>
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-2">
-          <span className="pop-3d flex h-9 w-9 items-center justify-center rounded-2xl bg-white/85 text-ink"><Icon className="h-4 w-4" /></span>
+          <span className="pop-3d flex h-9 w-9 items-center justify-center rounded-2xl bg-surface/85 text-ink"><Icon className="h-4 w-4" /></span>
           <span className="text-xs font-bold text-ink/80">{label}</span>
         </span>
       </div>
@@ -358,7 +358,7 @@ function Overview({ snapshot, onOpen }: { snapshot: IntelSnapshot; onOpen: (view
         <div className="flex items-center gap-5">
           <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full shadow-[0_14px_26px_-14px_var(--primary)]"
             style={{ background: `conic-gradient(var(--primary) 0 ${totals.negativeShare}%, var(--risk-soft) ${totals.negativeShare}%)` }}>
-            <div className="flex h-16 w-16 flex-col items-center justify-center rounded-full bg-white">
+            <div className="flex h-16 w-16 flex-col items-center justify-center rounded-full bg-surface">
               <strong className="font-display text-xl text-ink">{totals.negativeShare.toFixed(0)}%</strong>
               <span className="text-[9px] font-bold text-primary">NEGATIVE</span>
             </div>
@@ -377,7 +377,7 @@ function Overview({ snapshot, onOpen }: { snapshot: IntelSnapshot; onOpen: (view
             <div className="flex h-28 w-full items-end overflow-hidden rounded-3xl bg-gradient-to-br from-sky via-lavender to-blush p-3 sm:w-44">
               <div className="flex w-full items-end gap-1">
                 {snapshot.timeline.map((t) => (
-                  <span key={t.time} className="flex-1 rounded-t-md bg-white/75" style={{ height: `${Math.max(8, (t.total / Math.max(1, peak?.total ?? 1)) * 100)}%` }} />
+                  <span key={t.time} className="flex-1 rounded-t-md bg-surface/75" style={{ height: `${Math.max(8, (t.total / Math.max(1, peak?.total ?? 1)) * 100)}%` }} />
                 ))}
               </div>
             </div>
@@ -444,7 +444,7 @@ function FeedRow({ post, compact: dense = false }: { post: LivePost; compact?: b
     ? "Engagement not in dataset"
     : Object.entries(post.engagementDetail).map(([k, v]) => `${k} ${compact(v)}`).join(" · ");
   return (
-    <article className={cn("rounded-3xl border border-white/70 bg-white/70 p-4 transition hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-20px_oklch(0.45_0.1_20/50%)]", dense && "p-3")}>
+    <article className={cn("rounded-3xl border border-border bg-surface/70 p-4 transition hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-20px_oklch(0.05_0.03_250/70%)]", dense && "p-3")}>
       <div className="flex items-start gap-3">
         <PlatformGlyph platform={post.platform} />
         <div className="min-w-0 flex-1">
@@ -460,7 +460,7 @@ function FeedRow({ post, compact: dense = false }: { post: LivePost; compact?: b
             {post.topic && <span className="rounded-full bg-sky/60 px-2.5 py-1 text-[10px] font-bold text-ink">{post.topic}</span>}
             {post.narrativeStage && <span className="rounded-full bg-lavender/60 px-2.5 py-1 text-[10px] font-bold text-ink">{post.narrativeStage}</span>}
             {post.url ? (
-              <a href={post.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
+              <a href={post.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-full bg-surface px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
                 Source <ExternalLink className="h-3 w-3" />
               </a>
             ) : (
@@ -488,9 +488,9 @@ function SocialFeed({ snapshot, filters, setFilters }: { snapshot: IntelSnapshot
         {(["All", ...ALL_PLATFORMS] as const).map((p) => (
           <button key={p} onClick={() => setFilters({ ...filters, platform: p as Platform | "All" })}
             className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
-              filters.platform === p ? "bg-gradient-to-r from-primary to-blush text-primary-foreground shadow-[0_10px_20px_-12px_var(--primary)]" : "bg-white/70 text-muted-foreground hover:text-ink")}>{p}</button>
+              filters.platform === p ? "bg-gradient-to-r from-primary to-blush text-primary-foreground shadow-[0_10px_20px_-12px_var(--primary)]" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{p}</button>
         ))}
-        <span className="ml-auto flex items-center gap-2 rounded-full border border-border bg-white/70 px-3 py-1.5">
+        <span className="ml-auto flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5">
           <Filter className="h-3.5 w-3.5 text-muted-foreground" />
           <input value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} placeholder="Filter these records" className="w-40 bg-transparent text-xs outline-hidden" />
         </span>
@@ -530,7 +530,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
   return (
     <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
       <Panel title="Narrative Network" eyebrow="Accounts from the datasets; links only where the data records a shared source, shared event or mention">
-        <div className="relative h-[560px] overflow-hidden rounded-3xl bg-gradient-to-br from-white via-sky/30 to-lavender/40">
+        <div className="relative h-[560px] overflow-hidden rounded-3xl bg-gradient-to-br from-surface via-sky/30 to-lavender/40">
           <svg className="pointer-events-none absolute inset-0 h-full w-full">
             {edges.map((e, i) => {
               const a = byId.get(e.from); const b = byId.get(e.to);
@@ -545,7 +545,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
             return (
               <Tooltip key={n.id}><TooltipTrigger asChild>
                 <button aria-label={n.label} onClick={() => setSelected(n.id)}
-                  className={cn("pop-3d absolute z-10 flex items-center justify-center rounded-full border-4 border-white transition hover:scale-110",
+                  className={cn("pop-3d absolute z-10 flex items-center justify-center rounded-full border-4 border-border transition hover:scale-110",
                     active?.id === n.id && "ring-4 ring-primary/40", linked && "ring-2 ring-primary/25")}
                   style={{ left: `calc(${n.x}% - ${size}px)`, top: `calc(${n.y}% - ${size}px)`, width: size * 2, height: size * 2 }}>
                   <PlatformGlyph platform={n.platform} className="h-full w-full border-0 shadow-none" />
@@ -554,7 +554,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
             );
           })}
           {active && (
-            <div className="absolute bottom-4 left-4 max-w-[280px] rounded-2xl bg-white/90 p-3 text-xs shadow-lg">
+            <div className="absolute bottom-4 left-4 max-w-[280px] rounded-2xl bg-surface/90 p-3 text-xs shadow-lg">
               <p className="font-display font-extrabold text-ink">{active.label}</p>
               <p className="mt-1 text-muted-foreground">{active.platform} · {active.handle} · {active.posts} records</p>
               <p className="mt-1 text-muted-foreground">{activeLinks.length} evidence link{activeLinks.length === 1 ? "" : "s"} in this selection</p>
@@ -563,7 +563,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
                 : <p className="mt-2 text-[10px] font-semibold text-muted-foreground">No source URL in dataset</p>}
             </div>
           )}
-          <div className="absolute right-4 top-4 space-y-1.5 rounded-2xl bg-white/85 p-3 text-[11px] font-semibold">
+          <div className="absolute right-4 top-4 space-y-1.5 rounded-2xl bg-surface/85 p-3 text-[11px] font-semibold">
             {ALL_PLATFORMS.map((p) => (
               <p key={p} className="flex items-center gap-2 text-muted-foreground"><i className={cn("h-2.5 w-2.5 rounded-full", `bg-[var(--platform-${p.toLowerCase()})]`)} />{p}</p>
             ))}
@@ -599,7 +599,7 @@ function NetworkView({ snapshot }: { snapshot: IntelSnapshot }) {
               ) : (
                 <div className="space-y-1.5">
                   {activeLinks.map((l, i) => (
-                    <button key={`${l.other!.id}-${l.kind}-${i}`} onClick={() => setSelected(l.other!.id)} className="flex w-full items-center gap-2 rounded-2xl bg-white/70 px-3 py-2 text-left text-xs hover:bg-white">
+                    <button key={`${l.other!.id}-${l.kind}-${i}`} onClick={() => setSelected(l.other!.id)} className="flex w-full items-center gap-2 rounded-2xl bg-surface/70 px-3 py-2 text-left text-xs hover:bg-surface">
                       <span className="min-w-0 flex-1 truncate font-semibold text-ink">{l.other!.label}</span>
                       <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">{l.kind} ×{l.weight}</span>
                     </button>
@@ -642,7 +642,7 @@ function TimelineChart({ data, compact: dense = false }: { data: IntelSnapshot["
           <CartesianGrid stroke="var(--border)" vertical={false} />
           <XAxis dataKey="time" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
           <YAxis hide={dense} tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} allowDecimals={false} />
-          <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "white", boxShadow: "0 14px 28px -18px rgba(0,0,0,.35)" }} />
+          <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "var(--popover)", color: "var(--popover-foreground)", boxShadow: "0 14px 28px -18px rgba(0,0,0,.35)" }} />
           <Area type="monotone" dataKey="total" name="Records" stroke="var(--primary)" strokeWidth={3} fill="url(#total)" dot={{ r: 3, fill: "var(--primary)", strokeWidth: 0 }} />
           <Area type="monotone" dataKey="concerned" name="Negative sentiment" stroke="var(--platform-telegram)" strokeWidth={2} fill="url(#sus)" dot={{ r: 2.5, fill: "var(--platform-telegram)", strokeWidth: 0 }} />
         </AreaChart>
@@ -666,7 +666,7 @@ function TimelineView({ snapshot }: { snapshot: IntelSnapshot }) {
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           {snapshot.stages.slice(0, 3).map((s) => (
-            <div key={s.name} className="rounded-3xl bg-gradient-to-br from-white to-sky/40 p-3">
+            <div key={s.name} className="rounded-3xl bg-gradient-to-br from-surface to-sky/40 p-3">
               <p className="font-display text-sm font-extrabold text-ink">{s.name}</p>
               <p className="text-xs text-muted-foreground">{s.count} records at this narrative stage</p>
             </div>
@@ -703,7 +703,7 @@ function SentimentDonut({ snapshot }: { snapshot: IntelSnapshot }) {
       <div className="relative h-44 flex-1 raised-chart">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="count" nameKey="name" innerRadius={50} outerRadius={74} paddingAngle={3} cornerRadius={8} stroke="white" strokeWidth={2}>
+            <Pie data={data} dataKey="count" nameKey="name" innerRadius={50} outerRadius={74} paddingAngle={3} cornerRadius={8} stroke="var(--background)" strokeWidth={2}>
               {data.map((e) => <Cell key={e.name} fill={e.color} />)}
             </Pie>
             <ChartTooltip />
@@ -733,7 +733,7 @@ function PlatformDonut({ snapshot }: { snapshot: IntelSnapshot }) {
       <div className="relative h-44 flex-1 raised-chart">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="count" nameKey="name" innerRadius={46} outerRadius={72} paddingAngle={2} cornerRadius={8} stroke="white" strokeWidth={2}>
+            <Pie data={data} dataKey="count" nameKey="name" innerRadius={46} outerRadius={72} paddingAngle={2} cornerRadius={8} stroke="var(--background)" strokeWidth={2}>
               {data.map((p) => <Cell key={p.name} fill={p.fill} />)}
             </Pie>
             <ChartTooltip />
@@ -764,7 +764,7 @@ function RegionalList({ regions, selected, onSelect }: { regions: IntelSnapshot[
       {top.map((s) => {
         const active = selected === s.state;
         return (
-          <button key={s.state} onClick={() => onSelect(active ? null : s.state)} className={cn("w-full rounded-2xl px-2.5 py-2 text-left transition", active ? "bg-white shadow-[0_14px_26px_-20px_oklch(0.45_0.1_20/60%)]" : "hover:bg-white/60")}>
+          <button key={s.state} onClick={() => onSelect(active ? null : s.state)} className={cn("w-full rounded-2xl px-2.5 py-2 text-left transition", active ? "bg-surface shadow-[0_14px_26px_-20px_oklch(0.05_0.03_250/70%)]" : "hover:bg-surface/60")}>
             <div className="mb-1 flex justify-between text-xs font-semibold">
               <span className="text-ink">{s.state}</span>
               <span className="text-muted-foreground">{s.posts.toLocaleString()}</span>
@@ -786,7 +786,7 @@ function GeographicView({ snapshot }: { snapshot: IntelSnapshot }) {
   return (
     <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
       <Panel title="Geographic Intelligence" eyebrow="Locations recorded in the datasets"
-        action={<span className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-ink">{selected ?? "India"}</span>}>
+        action={<span className="rounded-full bg-surface/80 px-3 py-1.5 text-xs font-bold text-ink">{selected ?? "India"}</span>}>
         <IndiaMap className="h-[560px]" selected={selected} onSelect={setSelected} regions={snapshot.states} cities={snapshot.cities} />
         <Note className="mt-3 block" rotate={-5}>Local insights. National safety.</Note>
       </Panel>
@@ -826,7 +826,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
     <div className="grid gap-5 xl:grid-cols-2">
       <Panel title="Platform Distribution" eyebrow={`${snapshot.totals.posts} records`}><PlatformDonut snapshot={snapshot} />
         <div className="mt-4 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-mint/70 to-sky/50 p-3 text-xs font-semibold text-ink">
-          <span className="pop-3d flex h-8 w-8 items-center justify-center rounded-full bg-white text-success"><TrendingUp className="h-4 w-4" /></span>
+          <span className="pop-3d flex h-8 w-8 items-center justify-center rounded-full bg-surface text-success"><TrendingUp className="h-4 w-4" /></span>
           Present on {snapshot.totals.platforms} of 4 dataset lanes.
         </div>
       </Panel>
@@ -843,7 +843,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
                 <CartesianGrid stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="time" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "white" }} />
+                <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "var(--popover)", color: "var(--popover-foreground)" }} />
                 <Bar dataKey="total" name="Records" fill="var(--primary)" radius={[8,8,0,0]} />
                 <Bar dataKey="concerned" name="Negative" fill="var(--platform-telegram)" radius={[8,8,0,0]} />
               </BarChart>
@@ -859,7 +859,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
                 <CartesianGrid stroke="var(--border)" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} allowDecimals={false} />
                 <YAxis type="category" dataKey="name" width={110} tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-                <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "white" }} />
+                <ChartTooltip contentStyle={{ borderRadius: 16, border: "1px solid var(--border)", background: "var(--popover)", color: "var(--popover-foreground)" }} />
                 <Bar dataKey="count" name="Records" fill="var(--chart-anxiety)" radius={[0,8,8,0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -869,7 +869,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
       <Panel title="Top accounts" eyebrow="Ranked on the engagement recorded in the datasets">
         <div className="space-y-2">
           {snapshot.influencers.map((a) => (
-            <div key={a.key} className="flex items-center gap-3 rounded-3xl bg-white/70 p-3">
+            <div key={a.key} className="flex items-center gap-3 rounded-3xl bg-surface/70 p-3">
               <PlatformGlyph platform={a.platform} className="h-9 w-9" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-ink">{a.label}</p>
@@ -903,7 +903,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
       <Panel title="Relationship evidence" eyebrow="How accounts in this selection are actually linked" className="xl:col-span-2">
         <div className="grid gap-3 sm:grid-cols-3">
           {edgeKinds.map(([kind, n]) => (
-            <div key={kind} className="rounded-3xl bg-gradient-to-br from-white to-sky/40 p-4">
+            <div key={kind} className="rounded-3xl bg-gradient-to-br from-surface to-sky/40 p-4">
               <p className="font-display text-sm font-extrabold text-ink">{kind}</p>
               <p className="mt-1 text-xs text-muted-foreground">{n} links between accounts</p>
             </div>
@@ -918,7 +918,7 @@ function AnalyticsView({ snapshot }: { snapshot: IntelSnapshot }) {
 
 function AlertRow({ alert }: { alert: IntelSnapshot["alerts"][number] }) {
   return (
-    <div className="flex items-start gap-3 rounded-3xl bg-white/70 p-3">
+    <div className="flex items-start gap-3 rounded-3xl bg-surface/70 p-3">
       <span className={cn("pop-3d mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl",
         alert.level === "High" ? "bg-blush text-risk" : alert.level === "Medium" ? "bg-peach text-ink" : "bg-mint text-success")}>
         <AlertTriangle className="h-3.5 w-3.5" />
@@ -967,7 +967,7 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const active = alerts.find((a) => a.id === selectedId) ?? alerts[0] ?? null;
   const set = (patch: Partial<ThreatFilters>) => setTf({ ...tf, ...patch });
-  const selectClass = "rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink outline-hidden";
+  const selectClass = "rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-ink outline-hidden";
   const dirty = JSON.stringify(tf) !== JSON.stringify(emptyThreatFilters);
 
   return (
@@ -998,10 +998,10 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
           <option value="All">All statuses</option>
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+        <label className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
           From <input type="date" className="bg-transparent text-ink outline-hidden" value={tf.from} onChange={(e) => set({ from: e.target.value })} />
         </label>
-        <label className="flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+        <label className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
           To <input type="date" className="bg-transparent text-ink outline-hidden" value={tf.to} onChange={(e) => set({ to: e.target.value })} />
         </label>
         {dirty && <Button size="sm" variant="secondary" className="ml-auto rounded-full" onClick={() => setTf(emptyThreatFilters)}><RotateCcw /> Reset</Button>}
@@ -1014,7 +1014,7 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
               {alerts.map((a) => (
                 <button key={a.id} onClick={() => setSelectedId(a.id)}
                   className={cn("w-full rounded-3xl border p-4 text-left transition",
-                    active?.id === a.id ? "border-primary/50 bg-gradient-to-br from-blush/60 to-peach/40 shadow-[0_18px_32px_-22px_var(--primary)]" : "border-white/70 bg-white/70 hover:bg-white")}>
+                    active?.id === a.id ? "border-primary/50 bg-gradient-to-br from-blush/60 to-peach/40 shadow-[0_18px_32px_-22px_var(--primary)]" : "border-border bg-surface/70 hover:bg-surface")}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-display text-sm font-extrabold text-ink">{a.title}</span>
                     <span className="flex items-center gap-1.5">
@@ -1025,10 +1025,10 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
                   <p className="mt-2 text-sm text-muted-foreground">{a.whatHappened}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] font-bold">
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-secondary-foreground">{a.threatType}</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-primary">Risk {a.riskScore}/100</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/70">{a.recordCount} records · {a.accounts.length} accounts</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/70">{a.platforms.join(" · ")}</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-ink/60">{a.firstSeen} → {a.lastSeen}</span>
+                    <span className="rounded-full bg-surface px-2.5 py-1 text-primary">Risk {a.riskScore}/100</span>
+                    <span className="rounded-full bg-surface px-2.5 py-1 text-ink/70">{a.recordCount} records · {a.accounts.length} accounts</span>
+                    <span className="rounded-full bg-surface px-2.5 py-1 text-ink/70">{a.platforms.join(" · ")}</span>
+                    <span className="rounded-full bg-surface px-2.5 py-1 text-ink/60">{a.firstSeen} → {a.lastSeen}</span>
                   </div>
                 </button>
               ))}
@@ -1063,7 +1063,7 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
               <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Accounts / entities</p>
               <div className="mt-2 space-y-1.5">
                 {active.accounts.map((acc) => (
-                  <div key={`${acc.platform}:${acc.handle}`} className="flex items-center gap-2 rounded-2xl bg-white/70 px-3 py-2">
+                  <div key={`${acc.platform}:${acc.handle}`} className="flex items-center gap-2 rounded-2xl bg-surface/70 px-3 py-2">
                     <PlatformGlyph platform={acc.platform} className="h-7 w-7" />
                     <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink">{acc.handle}</span>
                     <span className="text-[10px] font-bold text-muted-foreground">{acc.records} rec</span>
@@ -1089,7 +1089,7 @@ function AlertsView({ snapshot, filters }: { snapshot: IntelSnapshot; filters: F
               <p className="mt-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Evidence ({active.evidence.length})</p>
               <div className="mt-2 max-h-80 space-y-2 overflow-y-auto pr-1">
                 {active.evidence.map((e) => (
-                  <div key={e.id} className="rounded-2xl bg-white/70 p-3">
+                  <div key={e.id} className="rounded-2xl bg-surface/70 p-3">
                     <div className="flex items-center justify-between gap-2">
                       <span className="truncate text-xs font-bold text-ink">{e.handle}</span>
                       <span className="shrink-0 text-[10px] text-muted-foreground">{e.platform} · {e.date}</span>
@@ -1194,13 +1194,13 @@ function ReportsView({ snapshot }: { snapshot: IntelSnapshot }) {
           {reports.map((r, i) => (
             <button key={r.title} onClick={() => setOpen(i)}
               className={cn("rounded-3xl bg-gradient-to-br p-4 text-left transition hover:-translate-y-0.5", r.tone, open === i && "ring-2 ring-primary/40")}>
-              <span className="pop-3d mb-3 flex h-9 w-9 items-center justify-center rounded-2xl bg-white/85 text-ink"><FileText className="h-4 w-4" /></span>
+              <span className="pop-3d mb-3 flex h-9 w-9 items-center justify-center rounded-2xl bg-surface/85 text-ink"><FileText className="h-4 w-4" /></span>
               <p className="font-display text-sm font-extrabold text-ink">{r.title}</p>
               <p className="mt-1 text-xs text-ink/70">{r.detail}</p>
             </button>
           ))}
         </div>
-        <div className="mt-5 rounded-3xl bg-white/70 p-4">
+        <div className="mt-5 rounded-3xl bg-surface/70 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="font-display text-sm font-extrabold text-ink">{active.title}</p>
             <div className="flex gap-2">
@@ -1259,7 +1259,7 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
     <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
       <Panel title="Narrative emergence replay" eyebrow={`${events.length} dataset milestones`}
         action={<span className="rounded-full bg-risk-soft px-3 py-1.5 text-xs font-bold text-risk">{event.date}</span>}>
-        <div className="relative h-[500px] overflow-hidden rounded-3xl bg-gradient-to-br from-white via-sky/35 to-lavender/45">
+        <div className="relative h-[500px] overflow-hidden rounded-3xl bg-gradient-to-br from-surface via-sky/35 to-lavender/45">
           <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
           <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             {events.slice(1).map((e, i) => {
@@ -1270,7 +1270,7 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
           {events.map((e, i) => (
             <div key={e.id} className={cn("absolute z-10 flex flex-col items-center transition-all duration-500", i <= step ? "scale-100 opacity-100" : "scale-75 opacity-25")} style={{ left: `${e.x}%`, top: `${e.y}%` }}>
               <span className={cn("rounded-full ring-4 transition", i === step ? "ring-primary/35" : "ring-transparent")}><PlatformGlyph platform={e.platform} className="h-12 w-12 [&_svg]:h-5 [&_svg]:w-5" /></span>
-              <span className="mt-2 max-w-[160px] truncate rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-ink shadow-sm">{e.date} · {e.label}</span>
+              <span className="mt-2 max-w-[160px] truncate rounded-full bg-surface px-2.5 py-1 text-[10px] font-bold text-ink shadow-sm">{e.date} · {e.label}</span>
             </div>
           ))}
         </div>
@@ -1287,7 +1287,7 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Speed</span>
             {[0.5, 1, 2].map((s) => (
-              <button key={s} onClick={() => setSpeed(s)} className={cn("rounded-full px-3 py-1.5 text-xs font-bold transition", speed === s ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-white/70 text-muted-foreground hover:text-ink")}>{s}×</button>
+              <button key={s} onClick={() => setSpeed(s)} className={cn("rounded-full px-3 py-1.5 text-xs font-bold transition", speed === s ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{s}×</button>
             ))}
             <span className="ml-auto flex gap-1">
               {events.map((e, i) => (
@@ -1353,7 +1353,7 @@ function LiveWebView({ query }: { query: string }) {
           className="mb-4 flex flex-wrap items-center gap-2"
           onSubmit={(e) => { e.preventDefault(); setActive(term.trim() || "Cockroach Janta Party"); }}
         >
-          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-white/70 px-4 py-2.5">
+          <span className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-surface/70 px-4 py-2.5">
             <Search className="h-4 w-4 text-muted-foreground" />
             <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search the live web…" className="w-full bg-transparent text-sm outline-hidden" />
           </span>
@@ -1367,7 +1367,7 @@ function LiveWebView({ query }: { query: string }) {
           {(["All", ...kinds] as const).map((k) => (
             <button key={k} onClick={() => setKind(k)}
               className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
-                kind === k ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-white/70 text-muted-foreground hover:text-ink")}>
+                kind === k ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>
               {k}
             </button>
           ))}
@@ -1386,7 +1386,7 @@ function LiveWebView({ query }: { query: string }) {
 
         <div className="grid gap-3 xl:grid-cols-2">
           {items.map((item) => (
-            <article key={item.id} className="rounded-3xl border border-white/70 bg-white/70 p-4">
+            <article key={item.id} className="rounded-3xl border border-border bg-surface/70 p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="truncate text-xs font-bold text-ink">{item.source}</p>
                 <span className="shrink-0 rounded-full bg-risk-soft px-2 py-0.5 text-[9px] font-bold text-risk">LIVE</span>
@@ -1397,7 +1397,7 @@ function LiveWebView({ query }: { query: string }) {
                 <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-bold text-secondary-foreground">{item.sourceKind}</span>
                 {item.published && <span className="text-[10px] font-semibold text-muted-foreground">{item.published}</span>}
                 {item.url ? (
-                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1 rounded-full bg-surface px-2.5 py-1 text-[10px] font-bold text-primary hover:underline">
                     Open source <ExternalLink className="h-3 w-3" />
                   </a>
                 ) : (

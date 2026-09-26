@@ -77,10 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NEXUS Social Intelligence" },
+      { title: "TRENDLY Social Intelligence" },
       { name: "description", content: "Social intelligence for emerging narratives, cross-platform spread, sentiment and coordinated activity." },
-      { name: "author", content: "NEXUS" },
-      { property: "og:title", content: "NEXUS Social Intelligence" },
+      { name: "author", content: "TRENDLY" },
+      { property: "og:title", content: "TRENDLY Social Intelligence" },
       { property: "og:description", content: "Understand emerging narratives, influence and unusual coordinated activity." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
