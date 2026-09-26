@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * NEXUS design system — premium light, pastel editorial.
+ * TRENDLY design system — dark intelligence command center.
  * Cream canvas, organic pastel blobs, navy ink, pink accent,
  * handwritten annotation layer, soft glass cards.
  */
@@ -66,98 +66,76 @@
   --color-sky: var(--sky);
   --color-butter: var(--butter);
   --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sky-glow: var(--sky-glow);
 }
 
 :root {
   --font-heading: "Plus Jakarta Sans", sans-serif;
   --font-body: "DM Sans", sans-serif;
-  --font-script: "Caveat", cursive;
-  --radius: 1.25rem;
+  --font-script: "JetBrains Mono", ui-monospace, monospace;
+  --radius: 1.1rem;
 
-  /* cream canvas + navy ink + pink accent */
-  --background: oklch(0.982 0.014 70);
-  --canvas: oklch(0.968 0.019 60);
-  --foreground: oklch(0.33 0.09 268);
-  --ink: oklch(0.31 0.11 266);
-  --card: oklch(1 0 0 / 86%);
-  --card-foreground: oklch(0.33 0.09 268);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.33 0.09 268);
-  --primary: oklch(0.68 0.19 5);
-  --primary-foreground: oklch(0.995 0 0);
-  --secondary: oklch(0.945 0.035 15);
-  --secondary-foreground: oklch(0.45 0.16 5);
-  --muted: oklch(0.962 0.014 60);
-  --muted-foreground: oklch(0.56 0.04 275);
-  --accent: oklch(0.94 0.05 200);
-  --accent-foreground: oklch(0.36 0.1 245);
-  --destructive: oklch(0.62 0.22 20);
+  /* TRENDLY — deep navy command center, cyan/teal accent */
+  --background: oklch(0.17 0.03 245);
+  --canvas: oklch(0.14 0.03 248);
+  --foreground: oklch(0.88 0.015 230);
+  --ink: oklch(0.97 0.01 220);
+  --card: oklch(0.22 0.035 240 / 72%);
+  --card-foreground: oklch(0.9 0.015 230);
+  --surface: oklch(0.25 0.035 238 / 70%);
+  --popover: oklch(0.21 0.035 242);
+  --popover-foreground: oklch(0.93 0.01 230);
+  --primary: oklch(0.82 0.14 180);
+  --primary-foreground: oklch(0.18 0.04 240);
+  --sky-glow: oklch(0.7 0.15 240);
+  --secondary: oklch(0.28 0.04 225);
+  --secondary-foreground: oklch(0.9 0.05 185);
+  --muted: oklch(0.26 0.03 240);
+  --muted-foreground: oklch(0.72 0.025 235);
+  --accent: oklch(0.3 0.06 210);
+  --accent-foreground: oklch(0.92 0.06 185);
+  --destructive: oklch(0.64 0.21 20);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.91 0.02 60 / 80%);
-  --input: oklch(0.93 0.02 60);
-  --ring: oklch(0.72 0.16 5);
+  --border: oklch(0.78 0.12 195 / 20%);
+  --input: oklch(0.78 0.12 195 / 26%);
+  --ring: oklch(0.82 0.14 180);
 
-  /* pastel family from the reference */
-  --blush: oklch(0.9 0.07 10);
-  --peach: oklch(0.92 0.06 60);
-  --butter: oklch(0.94 0.07 95);
-  --mint: oklch(0.93 0.06 165);
-  --sky: oklch(0.92 0.05 235);
-  --lavender: oklch(0.9 0.06 300);
+  /* dark-tinted accent family (replaces pastels) */
+  --blush: oklch(0.32 0.08 350);
+  --peach: oklch(0.34 0.07 55);
+  --butter: oklch(0.34 0.06 95);
+  --mint: oklch(0.33 0.07 175);
+  --sky: oklch(0.31 0.07 235);
+  --lavender: oklch(0.31 0.08 295);
 
-  --risk: oklch(0.65 0.21 12);
-  --risk-soft: oklch(0.93 0.06 12);
-  --success: oklch(0.62 0.14 168);
-  --success-soft: oklch(0.93 0.06 168);
+  --risk: oklch(0.7 0.19 18);
+  --risk-soft: oklch(0.3 0.08 18);
+  --success: oklch(0.8 0.15 170);
+  --success-soft: oklch(0.3 0.06 172);
 
-  --chart-anxiety: oklch(0.68 0.2 8);
-  --chart-fear: oklch(0.79 0.14 60);
-  --chart-anger: oklch(0.66 0.17 300);
-  --chart-neutral: oklch(0.8 0.06 250);
-  --platform-x: oklch(0.28 0.02 270);
-  --platform-telegram: oklch(0.7 0.13 235);
-  --platform-reddit: oklch(0.76 0.14 45);
-  --platform-instagram: oklch(0.7 0.18 348);
-  --chart-1: oklch(0.72 0.16 5);
-  --chart-2: oklch(0.74 0.11 200);
-  --chart-3: oklch(0.74 0.11 300);
-  --chart-4: oklch(0.82 0.12 85);
-  --chart-5: oklch(0.75 0.1 165);
+  --chart-anxiety: oklch(0.7 0.19 10);
+  --chart-fear: oklch(0.8 0.14 65);
+  --chart-anger: oklch(0.7 0.17 310);
+  --chart-neutral: oklch(0.72 0.08 240);
+  --platform-x: oklch(0.3 0.02 240);
+  --platform-telegram: oklch(0.66 0.15 240);
+  --platform-reddit: oklch(0.68 0.19 40);
+  --platform-instagram: oklch(0.66 0.22 350);
+  --chart-1: oklch(0.82 0.14 180);
+  --chart-2: oklch(0.7 0.15 240);
+  --chart-3: oklch(0.7 0.17 310);
+  --chart-4: oklch(0.8 0.14 80);
+  --chart-5: oklch(0.72 0.19 10);
 
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.33 0.09 268);
-  --sidebar-primary: oklch(0.68 0.19 5);
-  --sidebar-primary-foreground: oklch(0.995 0 0);
-  --sidebar-accent: oklch(0.96 0.02 20);
-  --sidebar-accent-foreground: oklch(0.33 0.09 268);
-  --sidebar-border: oklch(0.92 0.02 60);
-  --sidebar-ring: oklch(0.72 0.16 5);
-}
-
-.dark {
-  --background: oklch(0.2 0.03 280);
-  --foreground: oklch(0.96 0.01 90);
-  --card: oklch(0.26 0.03 280 / 88%);
-  --card-foreground: oklch(0.96 0.01 90);
-  --popover: oklch(0.26 0.03 280);
-  --popover-foreground: oklch(0.96 0.01 90);
-  --ink: oklch(0.96 0.01 90);
-  --primary: oklch(0.72 0.17 5);
-  --primary-foreground: oklch(0.18 0.03 280);
-  --secondary: oklch(0.3 0.04 300);
-  --secondary-foreground: oklch(0.95 0.01 90);
-  --muted: oklch(0.3 0.03 285);
-  --muted-foreground: oklch(0.78 0.02 280);
-  --accent: oklch(0.32 0.05 235);
-  --accent-foreground: oklch(0.95 0.01 90);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.66 0.15 5);
-  --sidebar: oklch(0.24 0.03 280);
-  --sidebar-foreground: oklch(0.96 0.01 90);
-  --sidebar-accent: oklch(0.3 0.04 300);
-  --sidebar-accent-foreground: oklch(0.96 0.01 90);
-  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar: oklch(0.19 0.035 244);
+  --sidebar-foreground: oklch(0.9 0.015 230);
+  --sidebar-primary: oklch(0.82 0.14 180);
+  --sidebar-primary-foreground: oklch(0.18 0.04 240);
+  --sidebar-accent: oklch(0.27 0.04 225);
+  --sidebar-accent-foreground: oklch(0.95 0.01 220);
+  --sidebar-border: oklch(0.78 0.12 195 / 20%);
+  --sidebar-ring: oklch(0.82 0.14 180);
 }
 
 @layer base {
@@ -171,11 +149,9 @@
     font-family: var(--font-body);
     min-width: 320px;
     background-image:
-      radial-gradient(52rem 30rem at -8% -6%, color-mix(in oklab, var(--blush) 70%, transparent), transparent 65%),
-      radial-gradient(44rem 26rem at 104% 2%, color-mix(in oklab, var(--sky) 62%, transparent), transparent 62%),
-      radial-gradient(40rem 30rem at 96% 96%, color-mix(in oklab, var(--peach) 60%, transparent), transparent 60%),
-      radial-gradient(38rem 26rem at 2% 88%, color-mix(in oklab, var(--lavender) 55%, transparent), transparent 62%),
-      linear-gradient(160deg, var(--background), var(--canvas));
+      radial-gradient(60rem 34rem at 0% -10%, oklch(0.4 0.1 200 / 22%), transparent 65%),
+      radial-gradient(50rem 30rem at 100% 0%, oklch(0.4 0.12 250 / 22%), transparent 62%),
+      linear-gradient(170deg, var(--background), var(--canvas));
     background-attachment: fixed;
   }
 
@@ -185,12 +161,13 @@
 /* soft white card with the reference's pillowy shadow */
 @utility glass-panel {
   background: var(--card);
-  border: 1px solid color-mix(in oklab, oklch(1 0 0) 65%, var(--border));
+  border: 1px solid var(--border);
   border-radius: var(--radius-2xl);
   box-shadow:
-    0 1px 2px oklch(0.4 0.06 20 / 4%),
-    0 18px 40px -18px oklch(0.45 0.08 20 / 22%),
-    inset 0 1px 0 oklch(1 0 0 / 85%);
+    0 0 0 1px oklch(0.82 0.14 180 / 6%),
+    0 0 28px -12px oklch(0.82 0.14 180 / 30%),
+    0 22px 44px -22px oklch(0.05 0.03 250 / 80%),
+    inset 0 1px 0 oklch(1 0 0 / 6%);
   backdrop-filter: blur(20px) saturate(140%);
 }
 
@@ -205,14 +182,14 @@
 @utility raised-chart {
   filter:
     drop-shadow(0 10px 10px color-mix(in oklab, var(--primary) 18%, transparent))
-    drop-shadow(0 2px 1px oklch(1 0 0 / 55%));
+    drop-shadow(0 0 6px color-mix(in oklab, var(--primary) 25%, transparent));
 }
 
 /* soft 3D lift for icon tiles and floating badges */
 @utility pop-3d {
   box-shadow:
-    0 10px 20px -8px oklch(0.45 0.1 20 / 32%),
-    inset 0 1px 0 oklch(1 0 0 / 55%);
+    0 0 18px -6px oklch(0.82 0.14 180 / 40%),
+    inset 0 1px 0 oklch(1 0 0 / 12%);
 }
 
 @utility blob {
@@ -225,3 +202,17 @@
 @keyframes pulse-node { 0%, 100% { transform: scale(1); opacity: .72; } 50% { transform: scale(1.35); opacity: 1; } }
 @keyframes replay-line { from { width: 0; } to { width: 100%; } }
 @keyframes float-slow { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-14px) rotate(3deg); } }
+
+@utility tech-grid {
+  background-image:
+    linear-gradient(oklch(0.82 0.14 180 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.14 180 / 5%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 30%, transparent 80%);
+}
+
+@layer base {
+  select, input, textarea { color-scheme: dark; }
+  input:focus-visible, select:focus-visible, button:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 30%, transparent); }
+  ::selection { background: color-mix(in oklab, var(--primary) 35%, transparent); }
+}

@@ -1,5 +1,5 @@
 /**
- * Cyber threat detection & early warning layer for NEXUS Alerts.
+ * Cyber threat detection & early warning layer for TRENDLY Alerts.
  *
  * Every alert here is derived from the SAME unified dataset used by all other
  * views (src/lib/dataset.ts + applyFilters in dataset-analytics.ts). No threat,
@@ -273,7 +273,7 @@ export function buildThreatAlerts(filters: Filters): ThreatAlert[] {
       threatType: "Misinformation/Disinformation",
       rows: shift,
       whatHappened: `${shift.length} records are annotated as a narrative shift/transition across ${uniq(shift.map((r) => r.platform)).join(", ")}.`,
-      whyFlagged: `Dataset narrative_stage / topic marks these records as a narrative shift. NEXUS does not judge truthfulness — only that the framing changed.`,
+      whyFlagged: `Dataset narrative_stage / topic marks these records as a narrative shift. TRENDLY does not judge truthfulness — only that the framing changed.`,
     }));
   }
 
