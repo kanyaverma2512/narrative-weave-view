@@ -97,9 +97,12 @@ function Note({ children, className, rotate = -6 }: { children: React.ReactNode;
 
 function Logo() {
   return (
-    <div className="flex flex-col">
-      <span className="font-display text-2xl font-extrabold tracking-tight text-ink">TRENDLY</span>
+    <div className="flex items-center gap-2.5">
+      <svg aria-hidden viewBox="0 0 32 32" className="h-9 w-9 drop-shadow-[0_0_8px_var(--primary)]"><path d="M16 2 28 9v14l-12 7L4 23V9z" fill="none" stroke="var(--primary)" strokeWidth="2.2" /><path d="M10 12h12M16 12v11" stroke="var(--sky-glow)" strokeWidth="2.6" strokeLinecap="round" /></svg>
+      <div className="flex flex-col">
+      <span className="font-display text-2xl font-extrabold tracking-[0.12em] text-ink">TRENDLY</span>
       <span className="text-[10px] font-medium tracking-wide text-muted-foreground">From Conversations to Clarity</span>
+      </div>
     </div>
   );
 }
