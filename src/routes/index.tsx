@@ -58,18 +58,38 @@ const views: { label: View; icon: typeof LayoutDashboard }[] = [
 function Blobs() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <span className="blob left-[-8rem] top-[-6rem] h-[26rem] w-[30rem] bg-blush/70 opacity-70" style={{ animation: "float-slow 18s ease-in-out infinite" }} />
-      <span className="blob right-[-10rem] top-[4rem] h-[24rem] w-[26rem] bg-sky/70 opacity-60" style={{ animation: "float-slow 22s ease-in-out infinite reverse" }} />
-      <span className="blob bottom-[-8rem] left-[18%] h-[22rem] w-[34rem] bg-peach/60 opacity-60" style={{ animation: "float-slow 26s ease-in-out infinite" }} />
-      <span className="blob bottom-[6rem] right-[6%] h-[18rem] w-[20rem] bg-lavender/60 opacity-55" style={{ animation: "float-slow 20s ease-in-out infinite reverse" }} />
-      <span className="blob left-[38%] top-[-4rem] h-[14rem] w-[22rem] bg-butter/60 opacity-50" />
+      <div className="tech-grid absolute inset-0" />
+      <span className="absolute left-[-10rem] top-[-8rem] h-[28rem] w-[34rem] rounded-full bg-primary/10 blur-3xl" />
+      <span className="absolute right-[-12rem] top-[10rem] h-[26rem] w-[30rem] rounded-full bg-sky-glow/10 blur-3xl" />
+      <span className="absolute bottom-[-10rem] left-[30%] h-[22rem] w-[36rem] rounded-full bg-primary/5 blur-3xl" />
+      <svg className="absolute right-0 top-0 h-[60vh] w-[50vw] opacity-30" viewBox="0 0 600 400">
+        {[[60,60,220,120],[220,120,380,70],[380,70,520,180],[220,120,300,260],[300,260,480,300],[520,180,480,300]].map(([a,b,c,d],i)=><line key={i} x1={a} y1={b} x2={c} y2={d} stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="0.8" />)}
+        {[[60,60],[220,120],[380,70],[520,180],[300,260],[480,300]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="2.5" fill="var(--primary)" style={{ animation: `pulse-node ${4+i}s ease-in-out infinite` }} />)}
+      </svg>
     </div>
+  );
+}
+
+function HeroCubes() {
+  const cube = (x: number, y: number, s: number, k: number) => (
+    <g key={k} transform={`translate(${x} ${y})`} style={{ animation: `float-slow ${14 + k * 3}s ease-in-out infinite` }}>
+      <polygon points={`0,${s * 0.5} ${s},0 ${s * 2},${s * 0.5} ${s},${s}`} fill="var(--primary)" fillOpacity="0.16" stroke="var(--primary)" strokeOpacity="0.7" strokeWidth="1" />
+      <polygon points={`0,${s * 0.5} ${s},${s} ${s},${s * 2} 0,${s * 1.5}`} fill="var(--primary)" fillOpacity="0.08" stroke="var(--primary)" strokeOpacity="0.5" strokeWidth="1" />
+      <polygon points={`${s},${s} ${s * 2},${s * 0.5} ${s * 2},${s * 1.5} ${s},${s * 2}`} fill="var(--sky-glow)" fillOpacity="0.08" stroke="var(--primary)" strokeOpacity="0.5" strokeWidth="1" />
+    </g>
+  );
+  return (
+    <svg aria-hidden className="pointer-events-none absolute right-[14%] top-[-10px] hidden h-40 w-72 opacity-80 md:block" viewBox="0 0 300 170">
+      {cube(110, 0, 42, 0)}{cube(40, 60, 34, 1)}{cube(185, 70, 36, 2)}
+      <line x1="0" y1="150" x2="300" y2="110" stroke="var(--primary)" strokeOpacity="0.25" />
+      <line x1="30" y1="10" x2="290" y2="160" stroke="var(--primary)" strokeOpacity="0.15" />
+    </svg>
   );
 }
 
 function Note({ children, className, rotate = -6 }: { children: React.ReactNode; className?: string; rotate?: number }) {
   return (
-    <span aria-hidden className={cn("hand pointer-events-none select-none text-[1.35rem] leading-tight text-primary/80", className)} style={{ transform: `rotate(${rotate}deg)` }}>
+    <span aria-hidden className={cn("pointer-events-none select-none font-mono text-[11px] font-semibold uppercase leading-relaxed tracking-[0.18em] text-primary/80", className)} data-rotate={rotate}>
       {children}
     </span>
   );
@@ -222,7 +242,7 @@ function Index() {
                 return (
                   <button key={label} onClick={() => setView(label)}
                     className={cn("flex w-full items-center gap-3 rounded-full px-4 py-3 text-left text-sm font-semibold transition",
-                      view === label ? "bg-gradient-to-r from-primary to-blush text-primary-foreground shadow-[0_10px_22px_-10px_var(--primary)]" : "text-muted-foreground hover:bg-secondary/60 hover:text-ink")}>
+                      view === label ? "bg-gradient-to-r from-primary to-sky-glow text-primary-foreground shadow-[0_10px_22px_-10px_var(--primary)]" : "text-muted-foreground hover:bg-secondary/60 hover:text-ink")}>
                     <Icon className="h-4 w-4" />
                     <span className="truncate">{label}</span>
                     {badge && <span className={cn("ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold", view === label ? "bg-surface/25" : "bg-primary text-primary-foreground")}>{badge}</span>}
@@ -247,7 +267,8 @@ function Index() {
               ))}
             </div>
 
-            <div className="relative mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div className="relative mb-5 flex flex-col justify-between gap-3 overflow-hidden sm:flex-row sm:items-end">
+              {view === "Overview" && <HeroCubes />}
               <div>
                 <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary"><Sparkles className="h-3.5 w-3.5" /> Dataset intelligence workspace</p>
                 <h1 className="font-display text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
@@ -488,7 +509,7 @@ function SocialFeed({ snapshot, filters, setFilters }: { snapshot: IntelSnapshot
         {(["All", ...ALL_PLATFORMS] as const).map((p) => (
           <button key={p} onClick={() => setFilters({ ...filters, platform: p as Platform | "All" })}
             className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
-              filters.platform === p ? "bg-gradient-to-r from-primary to-blush text-primary-foreground shadow-[0_10px_20px_-12px_var(--primary)]" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{p}</button>
+              filters.platform === p ? "bg-gradient-to-r from-primary to-sky-glow text-primary-foreground shadow-[0_10px_20px_-12px_var(--primary)]" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{p}</button>
         ))}
         <span className="ml-auto flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5">
           <Filter className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1287,7 +1308,7 @@ function ReplayView({ snapshot }: { snapshot: IntelSnapshot }) {
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Speed</span>
             {[0.5, 1, 2].map((s) => (
-              <button key={s} onClick={() => setSpeed(s)} className={cn("rounded-full px-3 py-1.5 text-xs font-bold transition", speed === s ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{s}×</button>
+              <button key={s} onClick={() => setSpeed(s)} className={cn("rounded-full px-3 py-1.5 text-xs font-bold transition", speed === s ? "bg-gradient-to-r from-primary to-sky-glow text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>{s}×</button>
             ))}
             <span className="ml-auto flex gap-1">
               {events.map((e, i) => (
@@ -1367,7 +1388,7 @@ function LiveWebView({ query }: { query: string }) {
           {(["All", ...kinds] as const).map((k) => (
             <button key={k} onClick={() => setKind(k)}
               className={cn("rounded-full px-4 py-2 text-xs font-bold transition",
-                kind === k ? "bg-gradient-to-r from-primary to-blush text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>
+                kind === k ? "bg-gradient-to-r from-primary to-sky-glow text-primary-foreground" : "bg-surface/70 text-muted-foreground hover:text-ink")}>
               {k}
             </button>
           ))}
